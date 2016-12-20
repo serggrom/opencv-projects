@@ -1,32 +1,44 @@
 #include <cv.h>
 #include <highgui.h>
+#include <stdlib.h>
+#include <stdio.h>
 
-int main( int argc, char** argv ) 
+IplImage* image = 0;
+IplImage* src = 0;
+
+int main(int argc, char* argv[])
 {
-        // задаЄм высоту и ширину картинки
-        int height = 620;
-        int width = 440;
-        // задаЄм точку дл€ вывода текста
-        CvPoint pt = cvPoint( height/4, width/2 );
-        // —оздаЄи 8-битную, 3-канальную картинку
-        IplImage* hw = cvCreateImage(cvSize(height, width), 8, 3);
-        // заливаем картинку чЄрным цветом
-        cvSet(hw,cvScalar(0,0,0));
-        // инициализаци€ шрифта
-        CvFont font;
-        cvInitFont( &font, CV_FONT_HERSHEY_COMPLEX,1.0, 1.0, 0, 1, CV_AA);
-        // использу€ шрифт выводим на картинку текст
-        cvPutText(hw, "OpenCV Step By Step", pt, &font, CV_RGB(150, 0, 150) );
+        // им€ картинки задаЄтс€ первым параметром
+        char* filename = argc == 2 ? argv[1] : "Image0.jpg";
+        // получаем картинку
+        image = cvLoadImage("C:\\Users\\user\\Pictures\\1-newevidencef.jpg",1);
+        // клонируем картинку 
+        src = cvCloneImage(image);
 
-        // создаЄм окошко
-        cvNamedWindow("Hello World", 0);
-        // показываем картинку в созданном окне
-        cvShowImage("Hello World", hw);
+        printf("[i] image: %s\n", filename);
+        assert( src != 0 );
+
+        // окно дл€ отображени€ картинки
+        cvNamedWindow("original",CV_WINDOW_AUTOSIZE);
+
+        // показываем картинку
+        cvShowImage("original",image);
+
+        // выводим в консоль информацию о картинке
+        printf( "[i] channels:  %d\n",        image->nChannels );
+        printf( "[i] pixel depth: %d bits\n",   image->depth );
+        printf( "[i] width:       %d pixels\n", image->width );
+        printf( "[i] height:      %d pixels\n", image->height );
+        printf( "[i] image size:  %d bytes\n",  image->imageSize );
+        printf( "[i] width step:  %d bytes\n",  image->widthStep );
+
         // ждЄм нажати€ клавиши
         cvWaitKey(0);
-        
+
         // освобождаем ресурсы
-        cvReleaseImage(&hw);
-        cvDestroyWindow("Hello World");
+        cvReleaseImage(& image);
+        cvReleaseImage(&src);
+        // удал€ем окно
+        cvDestroyWindow("original");
         return 0;
 }
